@@ -1,5 +1,6 @@
 import numpy as np
-from rot import rotx, roty, rotz, rotz
+from rot import rot, rotx, roty, rotz, rotz
+
 
 
 def rot2crot(Mr):
@@ -46,3 +47,8 @@ def croty(theta):
 
 def crotz(theta):
     return rot2crot(rotz(theta))
+
+
+def crot(phi, theta):
+    return rot2crot(rot(phi, theta))
+
