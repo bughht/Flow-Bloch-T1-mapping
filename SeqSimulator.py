@@ -2,10 +2,13 @@ from SeqLoader import MRISequence
 import numpy as np
 import BlochSim as bs
 import matplotlib.pyplot as plt
+import seaborn as sns
 import os
 
+sns.set_theme(style="whitegrid")
+
 # Load sequence
-name = "MOLLI_533_dt_TR2.8_FA25_N75_SA_prep"
+name = "MOLLI_533_dt_TR2.8_FA30_N75_SA_prep"
 seq = MRISequence(os.path.join("sequences", name+".yaml")).data[name]
 
 # Simulate Params

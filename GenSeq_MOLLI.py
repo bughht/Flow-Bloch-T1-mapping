@@ -66,5 +66,5 @@ class MOLLI:
 
 
 if __name__ == "__main__":
-    molli = MOLLI(readout_seq="bSSFP_TR2.8_FA25_N75_SA_prep", dt=1)
-    molli.generate("MOLLI_533_dt_TR2.8_FA25_N75_SA_prep")
+    molli = MOLLI(readout_seq="bSSFP_TR2.8_FA10_N75_SA_prep", dt=1)
+    molli.generate("MOLLI_533_dt_TR2.8_FA10_N75_SA_prep")

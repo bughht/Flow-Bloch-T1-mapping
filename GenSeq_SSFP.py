@@ -47,5 +47,5 @@ class bSSFP:
 
 
 if __name__ == "__main__":
-    ssfp = bSSFP(2.8, 25, 75, True, True)
-    ssfp.generate("bSSFP_TR2.8_FA25_N75_SA_prep")
+    ssfp = bSSFP(2.8, 10, 75, True, True)
+    ssfp.generate("bSSFP_TR2.8_FA10_N75_SA_prep")
