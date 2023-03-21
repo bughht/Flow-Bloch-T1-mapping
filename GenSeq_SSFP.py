@@ -25,13 +25,13 @@ class bSSFP:
         self.NFlip = self.k_shape[0]
         self.NADCsamples = self.k_shape[1]
         self.kFOV = self.k_shape/self.FOV
-        self.dw = 1/self.kFOV
+        self.kx = 1/self.kFOV
 
         # [self.k_shape[0]/self.FOV[0], self.k_shape[1]/self.FOV[1]])
 
         # T/mm
-        self.GX = 1/(2*gamma*self.dw[0]*self.TR/4)*1e11
-        self.GY_max = 1/(2*gamma*self.dw[1]*self.TR/4)*1e11
+        self.GX = self.k_shape[0]/(2*np.pi*gamma*self.TR/4)*1e9
+        self.GY_max = self.k_shape[1]/(2*np.pi*gamma*self.TR/4)*1e9
 
     def add_readout(self, t_start, FA, TR, GX, GY, kY_idx):
         FA,  GX, GY, kY_idx = float(FA),  float(GX), float(GY), int(kY_idx)
@@ -112,5 +112,5 @@ class bSSFP:
 
 
 if __name__ == "__main__":
-    ssfp = bSSFP(2.8, 5, [320, 320], [128, 128], 5, True, True)
+    ssfp = bSSFP(2.8, 5, [314, 314], [128, 128], 5, True, True)
     ssfp.generate("TR2.8_FA5")

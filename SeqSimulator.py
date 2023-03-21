@@ -32,7 +32,7 @@ class M:
 
 if __name__ == "__main__":
     seq = MRISequence(os.path.join("sequences_ssfp", "TR2.8_FA5.yaml")).data
-    m_test = M(1000, 20, np.array([-32, -32]))
+    m_test = M(1001, 20, np.array([32, -3]))
 
     t = []
     M = []
