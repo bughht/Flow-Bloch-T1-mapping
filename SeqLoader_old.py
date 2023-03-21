@@ -19,4 +19,4 @@ class MRISequence:
 
 
 if __name__ == "__main__":
-    molli = MRISequence("sequences_ssfp/TR2.8_FA30.yaml")
+    print(molli.data)

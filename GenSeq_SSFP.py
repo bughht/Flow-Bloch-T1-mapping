@@ -24,13 +24,14 @@ class bSSFP:
     def data_process(self):
         self.NFlip = self.k_shape[0]+1
         self.NADCsamples = self.k_shape[1]
-        self.kFOV = np.array(
-            [self.k_shape[0]/self.FOV[0], self.k_shape[1]/self.FOV[1]])
+        self.kFOV = self.k_shape/self.FOV
         self.dw = 1/self.kFOV
-        # TODO: THERES something weird here
-        # gamma*Gx*dw*TR/4=pi
-        self.GX = 1/(gamma*self.dw[0]*self.TR/4)
-        self.GY_max = 1/(gamma*self.dw[1]*self.TR/4)
+
+        # [self.k_shape[0]/self.FOV[0], self.k_shape[1]/self.FOV[1]])
+
+        # T/mm
+        self.GX = 1/(2*gamma*self.dw[0]*self.TR/4)*1e9
+        self.GY_max = 1/(2*gamma*self.dw[1]*self.TR/4)*1e9
 
     def add_readout(self, t_start, FA, TR, GX, GY, kY_idx):
         FA,  GX, GY, kY_idx = float(FA),  float(GX), float(GY), int(kY_idx)
@@ -68,7 +69,7 @@ class bSSFP:
         self.seq.append(GX_ts_1)
         for adc_idx in range(self.NADCsamples):
             ADC_ts = {
-                "t": float(t_start+TR/4+adc_idx*TR/(self.NADCsamples-1)),
+                "t": float(t_start+TR/4+adc_idx*TR/(2*(self.NADCsamples-1))),
                 "type": "ADC",
                 "kx": adc_idx,
                 "ky": kY_idx

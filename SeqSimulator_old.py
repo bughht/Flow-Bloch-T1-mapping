@@ -8,7 +8,8 @@ import os
 sns.set_theme(style="whitegrid")
 
 # Load sequence
-name = "MOLLI_533_dt_TR2.8_FA30_N75_SA_prep"
+# name = "MOLLI_533_dt_TR2.8_FA25_N75_SA"
+name = "bSSFP_TR2.8_FA10_N75_SA_prep"
 seq = MRISequence(os.path.join("sequences_old", name+".yaml")).data[name]
 
 # Simulate Params
