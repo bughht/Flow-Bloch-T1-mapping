@@ -25,7 +25,7 @@ class MOLLI:
 
     def load_readout(self, readout_seq):
         # Load readout sequence
-        with open(os.path.join("sequences", readout_seq+".yaml"), "r") as f:
+        with open(os.path.join("sequences_old", readout_seq+".yaml"), "r") as f:
             self.readout_seq = yaml.load(
                 f, Loader=yaml.FullLoader)[readout_seq]
         self.readout_time = self.readout_seq[-1]["t"]

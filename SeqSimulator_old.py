@@ -9,7 +9,7 @@ sns.set_theme(style="whitegrid")
 
 # Load sequence
 name = "MOLLI_533_dt_TR2.8_FA30_N75_SA_prep"
-seq = MRISequence(os.path.join("sequences", name+".yaml")).data[name]
+seq = MRISequence(os.path.join("sequences_old", name+".yaml")).data[name]
 
 # Simulate Params
 T1 = 1000
@@ -32,10 +32,12 @@ for idx, pulse in enumerate(seq):
     prev_t = pulse["t"]
 
 # Plot
-plt.subplot(211)
+plt.subplot(311)
 plt.plot(t_state, M_state[:, 2])
 
-plt.subplot(212)
+plt.subplot(312)
 plt.plot(t_state, np.abs(M_state[:, 0]+1j*M_state[:, 1]))
 
+plt.subplot(313)
+plt.plot(t_state, np.angle(M_state[:, 0]+1j*M_state[:, 1]))
 plt.show()
