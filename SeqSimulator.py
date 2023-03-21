@@ -1,4 +1,5 @@
 from SeqLoader import MRISequence
+import scipy.fftpack as sfft
 import numpy as np
 import BlochSim as bs
 import matplotlib.pyplot as plt
@@ -30,11 +31,14 @@ class M:
 
 
 if __name__ == "__main__":
-    seq = MRISequence(os.path.join("sequences_ssfp", "TR2.8_FA30.yaml")).data
-    m_test = M(1000, 45, np.array([5, 3, 0]))
+    seq = MRISequence(os.path.join("sequences_ssfp", "TR2.8_FA5.yaml")).data
+    m_test = M(1000, 20, np.array([-32, -32]))
 
     t = []
     M = []
+    t_adc = []
+    M_adc = []
+    k = np.zeros((128, 128), dtype=complex)
 
     t_local = 0
     Gx = 0
@@ -49,15 +53,32 @@ if __name__ == "__main__":
         if ts['type'] == "GY":
             Gy = ts['G']
         t_local = ts['t']
+        if ts['type'] == "ADC":
+            k[ts['kx'], ts['ky']] = m_test.M[0]+1j*m_test.M[1]
+            t_adc.append(t_local)
+            M_adc.append(m_test.M)
         t.append(t_local)
-        M.append(m_test.M.copy())
+        M.append(m_test.M)
 
-M = np.array(M)
-plt.subplot(3, 1, 1)
-plt.plot(t, M[:, 2])
-plt.subplot(3, 1, 2)
-plt.plot(t, np.abs(M[:, 0]+1j*M[:, 1]))
-plt.subplot(3, 1, 3)
-plt.plot(t, np.angle(M[:, 0]+1j*M[:, 1]))
+    plt.figure()
+    M = np.array(M)
+    M_adc = np.array(M_adc)
+    plt.subplot(3, 1, 1)
+    plt.plot(t, M[:, 2])
+    plt.plot(t_adc, M_adc[:, 2])
+    plt.subplot(3, 1, 2)
+    plt.plot(t, np.abs(M[:, 0]+1j*M[:, 1]))
+    plt.plot(t_adc, np.abs(M_adc[:, 0]+1j*M_adc[:, 1]))
+    plt.subplot(3, 1, 3)
+    plt.plot(t, np.angle(M[:, 0]+1j*M[:, 1]))
+    plt.plot(t_adc, np.angle(M_adc[:, 0]+1j*M_adc[:, 1]))
 
-plt.show()
+    plt.figure()
+    plt.subplot(1, 2, 1)
+    plt.imshow(np.abs(k))
+    # plt.subplot(2, 1, 2)
+    # plt.imshow(np.angle(k))
+    plt.subplot(1, 2, 2)
+    # plt.imshow(np.log(np.abs(sfft.ifft2(k))))
+    plt.imshow(np.abs(sfft.ifft2(k)))
+    plt.show()
