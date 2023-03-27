@@ -38,7 +38,7 @@ if __name__ == "__main__":
     ratio = 500/64
     x_rate = 1
     y_rate = 1
-    m_test = M(1000, 30, np.array([0*ratio*x_rate, 0.5*ratio*y_rate]))
+    m_test = M(1000, 1000, np.array([0*ratio*x_rate, 16*ratio*y_rate]))
 
     t = []
     M = []
@@ -59,8 +59,10 @@ if __name__ == "__main__":
         if ts['type'] == "PULSE":
             m_test.flip(ts['FA'])
         if ts['type'] == "GX":
+            print(ts['t'], ts['t']-t_local, Gx, Gy)
             Gx = ts['G']
         if ts['type'] == "GY":
+            print(ts['t'], ts['t']-t_local, Gx, Gy)
             Gy = ts['G']
         t_local = ts['t']
         if ts['type'] == "ADC":

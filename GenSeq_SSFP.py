@@ -48,7 +48,7 @@ class bSSFP:
         GY_ts_0 = {
             "t": t_start,
             "type": "GY",
-            "G": -GY
+            "G": GY
         }
         GX_ts_0 = {
             "t": t_start,
@@ -130,7 +130,7 @@ class bSSFP:
                 self.FA*(((readout_idx % 2)*2-1) if self.sign_alter else 1),
                 self.TR,
                 self.GX,
-                -self.GY_max+readout_kY*2*self.GY_max/(self.NFlip-1),
+                self.GY_max*(2*readout_kY/self.NFlip-1),
                 readout_kY
             )
         with open(os.path.join("sequences_ssfp", name+".yaml"), "w") as f:
@@ -144,3 +144,7 @@ if __name__ == "__main__":
     ssfp.generate("TR2.8_FA90_FOV500_K64_center_first")
     ssfp = bSSFP(2.8, 90, [500, 500], [64, 64], 10, False, True, True)
     ssfp.generate("TR2.8_FA90_FOV500_K64")
+    ssfp = bSSFP(2.8, 20, [500, 500], [64, 64], 10, True, True, True)
+    ssfp.generate("TR2.8_FA20_FOV500_K64_center_first")
+    ssfp = bSSFP(2.8, 20, [500, 500], [64, 64], 10, False, True, True)
+    ssfp.generate("TR2.8_FA20_FOV500_K64")
