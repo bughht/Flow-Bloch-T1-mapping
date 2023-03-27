@@ -38,7 +38,7 @@ if __name__ == "__main__":
     ratio = 500/64
     x_rate = 1
     y_rate = 1
-    m_test = M(1000, 30, np.array([20*ratio*x_rate, -0*ratio*y_rate]))
+    m_test = M(1000, 30, np.array([0*ratio*x_rate, 0.5*ratio*y_rate]))
 
     t = []
     M = []
