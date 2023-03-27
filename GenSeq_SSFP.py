@@ -13,12 +13,13 @@ class bSSFP:
         FOV: list,  # mm
         k_shape: list,
         slice_thickness: float,  # TODO: change it into bandwidth
+        k_center_first: bool,
         sign_alter: bool,
         preparation: bool
     ):
         self.seq = []
-        self.TR, self.FA, self.FOV, self.k_shape, self.slice_thickness, self.sign_alter, self.preparation = TR, FA, np.array(
-            FOV), np.array(k_shape), slice_thickness, sign_alter, preparation
+        self.TR, self.FA, self.FOV, self.k_shape, self.slice_thickness, self.k_center_first, self.sign_alter, self.preparation = TR, FA, np.array(
+            FOV), np.array(k_shape), slice_thickness, k_center_first, sign_alter, preparation
         self.data_process()
 
     def data_process(self):
@@ -30,8 +31,10 @@ class bSSFP:
         # [self.k_shape[0]/self.FOV[0], self.k_shape[1]/self.FOV[1]])
 
         # T/mm
-        self.GX = self.k_shape[0]/(2*np.pi*gamma*self.TR/4)*1e9
-        self.GY_max = self.k_shape[1]/(2*np.pi*gamma*self.TR/4)*1e9
+        # self.GX = self.k_shape[0]/(2*np.pi*gamma*self.TR/4)*1e9
+        # self.GY_max = self.k_shape[1]/(2*np.pi*gamma*self.TR/4)*1e9
+        self.GX = self.k_shape[0]/(2*gamma*self.FOV[0]*self.TR/4)*1e3
+        self.GY_max = self.k_shape[1]/(2*gamma*self.FOV[1]*self.TR/4)*1e3
 
     def add_readout(self, t_start, FA, TR, GX, GY, kY_idx):
         FA,  GX, GY, kY_idx = float(FA),  float(GX), float(GY), int(kY_idx)
@@ -88,6 +91,25 @@ class bSSFP:
         self.seq.append(GY_tx_2)
         self.seq.append(GX_tx_2)
 
+    def get_twisted_index(self, N):
+        center_idx = N//2
+        idx_list = [center_idx]
+
+        twist_direction = -1
+        twist_cnt = False
+        twist_step = 1
+
+        for i in range(1, N):
+            next_idx = center_idx+twist_direction*twist_step
+            idx_list.append(next_idx)
+
+            twist_direction *= -1
+            if twist_cnt:
+                twist_step += 1
+            twist_cnt = not twist_cnt
+
+        return idx_list
+
     def generate(self, name):
         t_prep = 0
         if self.preparation:
@@ -97,20 +119,28 @@ class bSSFP:
                 "type": "PULSE",
                 "FA": self.FA/2,
             })
-        for readout_idx in range(self.NFlip):
-            t_start = t_prep+self.TR*readout_idx
+        if not self.k_center_first:
+            self.readout_kY_idx = range(self.NFlip)
+        else:
+            self.readout_kY_idx = self.get_twisted_index(self.NFlip)
+        for readout_idx, readout_kY in enumerate(self.readout_kY_idx):
+            t_start = float(t_prep+self.TR*readout_idx)
             self.add_readout(
                 t_start,
                 self.FA*(((readout_idx % 2)*2-1) if self.sign_alter else 1),
                 self.TR,
                 self.GX,
-                -self.GY_max+readout_idx*2*self.GY_max/(self.NFlip-1),
-                readout_idx
+                -self.GY_max+readout_kY*2*self.GY_max/(self.NFlip-1),
+                readout_kY
             )
         with open(os.path.join("sequences_ssfp", name+".yaml"), "w") as f:
             yaml.dump(self.seq, f)
 
 
 if __name__ == "__main__":
-    ssfp = bSSFP(2.8, 5, [314, 314], [128, 128], 5, True, True)
-    ssfp.generate("TR2.8_FA5")
+    # ssfp = bSSFP(2.8, 50, [330, 330], [128, 128], 10, True, True, True)
+    # ssfp.generate("TR2.8_FA50_FOV330_K128_center_first")
+    ssfp = bSSFP(2.8, 90, [500, 500], [64, 64], 10, True, True, True)
+    ssfp.generate("TR2.8_FA90_FOV500_K64_center_first")
+    ssfp = bSSFP(2.8, 90, [500, 500], [64, 64], 10, False, True, True)
+    ssfp.generate("TR2.8_FA90_FOV500_K64")
