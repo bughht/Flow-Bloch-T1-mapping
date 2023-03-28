@@ -88,8 +88,20 @@ class bSSFP:
             "type": "GX",
             "G": -GX
         }
+        GY_tx_3 = {
+            "t": t_start+TR,
+            "type": "GY",
+            "G": 0
+        }
+        GX_tx_3 = {
+            "t": t_start+TR,
+            "type": "GX",
+            "G": 0
+        }
         self.seq.append(GY_tx_2)
         self.seq.append(GX_tx_2)
+        self.seq.append(GY_tx_3)
+        self.seq.append(GX_tx_3)
 
     def get_twisted_index(self, N):
         center_idx = N//2
@@ -140,11 +152,19 @@ class bSSFP:
 if __name__ == "__main__":
     # ssfp = bSSFP(2.8, 50, [330, 330], [128, 128], 10, True, True, True)
     # ssfp.generate("TR2.8_FA50_FOV330_K128_center_first")
-    ssfp = bSSFP(2.8, 90, [500, 500], [64, 64], 10, True, True, True)
-    ssfp.generate("TR2.8_FA90_FOV500_K64_center_first")
-    ssfp = bSSFP(2.8, 90, [500, 500], [64, 64], 10, False, True, True)
-    ssfp.generate("TR2.8_FA90_FOV500_K64")
-    ssfp = bSSFP(2.8, 20, [500, 500], [64, 64], 10, True, True, True)
-    ssfp.generate("TR2.8_FA20_FOV500_K64_center_first")
-    ssfp = bSSFP(2.8, 20, [500, 500], [64, 64], 10, False, True, True)
-    ssfp.generate("TR2.8_FA20_FOV500_K64")
+    # ssfp = bSSFP(2.8, 90, [500, 500], [64, 64], 10, True, True, True)
+    # ssfp.generate("TR2.8_FA90_FOV500_K64_center_first")
+    # ssfp = bSSFP(2.8, 90, [500, 500], [64, 64], 10, False, True, True)
+    # ssfp.generate("TR2.8_FA90_FOV500_K64")
+    # ssfp = bSSFP(2.8, 20, [500, 500], [64, 64], 10, True, True, True)
+    # ssfp.generate("TR2.8_FA20_FOV500_K64_center_first")
+    # ssfp = bSSFP(2.8, 20, [500, 500], [64, 64], 10, False, True, True)
+    # ssfp.generate("TR2.8_FA0_FOV500_K64")
+    ssfp = bSSFP(2.8, 10, [320, 320], [64, 64], 10, True, True, True)
+    ssfp.generate("TR2.8_FA10_FOV320_K64_center_first")
+    ssfp = bSSFP(2.8, 10, [320, 320], [64, 64], 10, False, True, True)
+    ssfp.generate("TR2.8_FA10_FOV320_K64")
+    ssfp = bSSFP(2.8, 20, [320, 320], [64, 64], 10, True, True, True)
+    ssfp.generate("TR2.8_FA20_FOV320_K64_center_first")
+    ssfp = bSSFP(2.8, 20, [320, 320], [64, 64], 10, False, True, True)
+    ssfp.generate("TR2.8_FA20_FOV320_K64")

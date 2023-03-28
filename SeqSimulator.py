@@ -3,6 +3,7 @@ import scipy.fftpack as sfft
 import numpy as np
 import BlochSim as bs
 import matplotlib.pyplot as plt
+from tqdm import tqdm
 import seaborn as sns
 import os
 gamma = 42.577478518e6  # Hz/T
@@ -32,13 +33,16 @@ class M:
 
 
 if __name__ == "__main__":
-    seq = MRISequence(os.path.join("sequences_ssfp",
-                                   "TR2.8_FA20_FOV500_K64_center_first.yaml")).data
-    #    "TR2.8_FA20_FOV500_K64.yaml")).data
-    ratio = 500/64
+    # seq = MRISequence(os.path.join("sequences_ssfp",
+    #                                "TR2.8_FA20_FOV320_K64_center_first.yaml")).data
+    #    "TR2.8_FA20_FOV320_K64.yaml")).data
+    seq = MRISequence(os.path.join(
+        "sequences_MOLLI", "MOLLI_533_TR2.8_FA20_FOV320_K64_center_first.yaml")).data
+    # "sequences_MOLLI", "MOLLI_533_dt_TR2.8_FA20_FOV320_K64_center_first.yaml")).data
+    ratio = 320/64
     x_rate = 1
     y_rate = 1
-    m_test = M(1000, 1000, np.array([0*ratio*x_rate, 16*ratio*y_rate]))
+    m_test = M(1000, 20, np.array([0*ratio*x_rate, 10*ratio*y_rate]))
 
     t = []
     M = []
@@ -59,12 +63,13 @@ if __name__ == "__main__":
         if ts['type'] == "PULSE":
             m_test.flip(ts['FA'])
         if ts['type'] == "GX":
-            print(ts['t'], ts['t']-t_local, Gx, Gy)
             Gx = ts['G']
         if ts['type'] == "GY":
-            print(ts['t'], ts['t']-t_local, Gx, Gy)
             Gy = ts['G']
         t_local = ts['t']
+        if ts['type'] == "READOUT_START":
+            k = np.zeros((64, 64), dtype=complex)
+            print(cnt_adc, m_test.M)
         if ts['type'] == "ADC":
             if not now_adc:
                 now_adc = True
@@ -77,39 +82,51 @@ if __name__ == "__main__":
         else:
             if now_adc:
                 now_adc = False
+        if ts['type'] == "READOUT_END":
+            plt.figure()
+            plt.subplot(1, 2, 1)
+            plt.imshow(np.abs(k))
+            # plt.subplot(2, 1, 2)
+            # plt.imshow(np.angle(k))
+            plt.subplot(1, 2, 2)
+            # plt.imshow(np.log(np.abs(sfft.ifft2(k))))
+            plt.imshow(np.abs(sfft.fftshift(sfft.ifft2(k))))
+            plt.show()
         t.append(t_local)
         Gx_h.append(Gx)
         Gy_h.append(Gy)
         M.append(m_test.M)
 
-    plt.figure()
-    k_meshgrid_x, k_meshgrid_y = np.meshgrid(range(64), range(64))
-    Ex = k[k_meshgrid_x, k_meshgrid_y].real
-    Ey = k[k_meshgrid_x, k_meshgrid_y].imag
-    plt.quiver(k_meshgrid_x, k_meshgrid_y, Ex, Ey)
+    # plt.figure()
+    # plt.subplot(1, 2, 1)
+    # plt.imshow(np.abs(k))
+    # # plt.subplot(2, 1, 2)
+    # # plt.imshow(np.angle(k))
+    # plt.subplot(1, 2, 2)
+    # # plt.imshow(np.log(np.abs(sfft.ifft2(k))))
+    # plt.imshow(np.abs(sfft.fftshift(sfft.ifft2(k))))
+    # plt.show()
+
+    # plt.figure()
+    # k_meshgrid_x, k_meshgrid_y = np.meshgrid(range(64), range(64))
+    # Ex = k[k_meshgrid_x, k_meshgrid_y].real
+    # Ey = k[k_meshgrid_x, k_meshgrid_y].imag
+    # plt.quiver(k_meshgrid_x, k_meshgrid_y, Ex, Ey)
 
     plt.figure()
     M = np.array(M)
     M_adc = np.array(M_adc)
     plt.subplot(4, 1, 1)
     plt.plot(t, M[:, 2])
-    plt.plot(t_adc, M_adc[:, 2])
+    # plt.plot(t_adc, M_adc[:, 2])
     plt.subplot(4, 1, 2)
     plt.plot(t, np.abs(M[:, 0]+1j*M[:, 1]))
-    plt.plot(t_adc, np.abs(M_adc[:, 0]+1j*M_adc[:, 1]))
+    # plt.plot(t_adc, np.abs(M_adc[:, 0]+1j*M_adc[:, 1]))
     plt.subplot(4, 1, 3)
     plt.plot(t, np.angle(M[:, 0]+1j*M[:, 1]))
-    plt.plot(t_adc, np.angle(M_adc[:, 0]+1j*M_adc[:, 1]))
+    # plt.plot(t_adc, np.angle(M_adc[:, 0]+1j*M_adc[:, 1]))
     plt.subplot(4, 1, 4)
     plt.plot(t, Gx_h)
     plt.plot(t, Gy_h)
 
-    plt.figure()
-    plt.subplot(1, 2, 1)
-    plt.imshow(np.abs(k))
-    # plt.subplot(2, 1, 2)
-    # plt.imshow(np.angle(k))
-    plt.subplot(1, 2, 2)
-    # plt.imshow(np.log(np.abs(sfft.ifft2(k))))
-    plt.imshow(np.abs(sfft.fftshift(sfft.ifft2(k))))
     plt.show()
