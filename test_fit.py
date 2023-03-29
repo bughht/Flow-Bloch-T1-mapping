@@ -20,7 +20,15 @@ if __name__ == "__main__":
     for i in range(8):
         MOLLI_readout_img.append(load_img(
             "../Flow-Bloch-T1-mapping-cpp/img_MOLLI/533_TR2.8_FA20_FOV320_K64_center_first", i))
-    MOLLI_readout_img = np.asarray(MOLLI_readout_img)
+    MOLLI_readout_img = np.asarray(
+        MOLLI_readout_img)
+
+    print(MOLLI_readout_img[:, 10, 10])
+
+    plt.figure()
+    for i in range(8):
+        plt.subplot(2, 4, i+1)
+        plt.imshow(MOLLI_readout_img[i])
 
     T1_result = np.zeros(MOLLI_readout_img[0].shape)
 
@@ -31,5 +39,6 @@ if __name__ == "__main__":
 
     print(T1_result)
 
+    plt.figure()
     plt.imshow(T1_result)
     plt.show()
