@@ -19,7 +19,7 @@ if __name__ == "__main__":
         [200, 1200, 2200, 3200, 4200, 300, 1300, 2300]) * 1e-3
     for i in range(8):
         MOLLI_readout_img.append(load_img(
-            "../Flow-Bloch-T1-mapping-cpp/img_MOLLI/533_TR2.8_FA20_FOV320_K64_center_first", i))
+            "../Flow-Bloch-T1-mapping-cpp/img_MOLLI/533_TR2.8_FA10_FOV320_K64_center_first_64^3_323216", i))
     MOLLI_readout_img = np.asarray(
         MOLLI_readout_img)
 
